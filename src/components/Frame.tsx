@@ -13,26 +13,62 @@ import {
   CardDescription,
   CardContent,
 } from "~/components/ui/card";
-
+import { PurpleButton } from "~/components/ui/PurpleButton";
 import { config } from "~/components/providers/WagmiProvider";
 import { truncateAddress } from "~/lib/truncateAddress";
 import { base, optimism } from "wagmi/chains";
 import { useSession } from "next-auth/react";
 import { createStore } from "mipd";
 import { Label } from "~/components/ui/label";
-import { PROJECT_TITLE } from "~/lib/constants";
+import { PROJECT_TITLE, POSITIVE_MESSAGES } from "~/lib/constants";
 
-function ExampleCard() {
+function PositiveMessageQuiz() {
+  const [currentMessage, setCurrentMessage] = useState("");
+  const [showDisclaimer, setShowDisclaimer] = useState(false);
+
+  const getPositiveMessage = useCallback(() => {
+    const message = POSITIVE_MESSAGES[Math.floor(Math.random() * POSITIVE_MESSAGES.length)];
+    setCurrentMessage(message);
+    setShowDisclaimer(true);
+  }, []);
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Welcome to the Frame Template</CardTitle>
+        <CardTitle>Spread Positivity</CardTitle>
         <CardDescription>
-          This is an example card that you can customize or remove
+          Click to receive and share positive energy
         </CardDescription>
       </CardHeader>
-      <CardContent>
-        <Label>Place content in a Card here.</Label>
+      <CardContent className="flex flex-col gap-4">
+        <div className="space-y-2">
+          {currentMessage && (
+            <div className="p-4 bg-purple-50 rounded-lg text-center">
+              {currentMessage}
+            </div>
+          )}
+          
+          <PurpleButton onClick={getPositiveMessage}>
+            {currentMessage ? "Another Boost ✨" : "Get Positive Message"}
+          </PurpleButton>
+        </div>
+
+        {showDisclaimer && (
+          <div className="text-xs text-neutral-500 mt-4">
+            <p>Maschine can currently:</p>
+            <ul className="list-disc pl-4 mt-1">
+              <li>Create interactive buttons</li>
+              <li>Display dynamic messages</li>
+              <li>Track basic interactions</li>
+            </ul>
+            <p className="mt-2">Cannot yet:</p>
+            <ul className="list-disc pl-4">
+              <li>Store long-term data</li>
+              <li>Handle complex transactions</li>
+              <li>Create new smart contracts</li>
+            </ul>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
@@ -41,9 +77,7 @@ function ExampleCard() {
 export default function Frame() {
   const [isSDKLoaded, setIsSDKLoaded] = useState(false);
   const [context, setContext] = useState<Context.FrameContext>();
-
   const [added, setAdded] = useState(false);
-
   const [addFrameResult, setAddFrameResult] = useState("");
 
   const addFrame = useCallback(async () => {
@@ -72,7 +106,6 @@ export default function Frame() {
       setContext(context);
       setAdded(context.client.added);
 
-      // If frame isn't already added, prompt user to add it
       if (!context.client.added) {
         addFrame();
       }
@@ -104,13 +137,9 @@ export default function Frame() {
       console.log("Calling ready");
       sdk.actions.ready({});
 
-      // Set up a MIPD Store, and request Providers.
       const store = createStore();
-
-      // Subscribe to the MIPD Store.
       store.subscribe((providerDetails) => {
         console.log("PROVIDER DETAILS", providerDetails);
-        // => [EIP6963ProviderDetail, EIP6963ProviderDetail, ...]
       });
     };
     if (sdk && !isSDKLoaded) {
@@ -140,7 +169,7 @@ export default function Frame() {
         <h1 className="text-2xl font-bold text-center mb-4 text-neutral-900">
           {PROJECT_TITLE}
         </h1>
-        <ExampleCard />
+        <PositiveMessageQuiz />
       </div>
     </div>
   );
