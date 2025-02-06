@@ -1,6 +1,6 @@
-export const PROJECT_ID = 'positivepulse';
+export const PROJECT_ID = 'PositivePulse';
 export const PROJECT_TITLE = "PositivePulse";
-export const PROJECT_DESCRIPTION = "Spread positivity with every click - powered by Maschine";
+export const PROJECT_DESCRIPTION = "Spread positivity through uplifting messages - Powered by Farcaster Frames";
 export const POSITIVE_MESSAGES = [
   "You make the world brighter! 🌟",
   "Your kindness creates ripples! 💧",
